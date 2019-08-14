@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-13 16:21:42
- * @LastEditTime: 2019-08-13 17:42:57
+ * @LastEditTime: 2019-08-14 15:31:55
  * @LastEditors: Please set LastEditors
  -->
 <!DOCTYPE html>
@@ -163,17 +163,17 @@
             });
             $.ajax({
                 url: 'http://localhost:8080/admin/user/info',
-                success: function(backData){
-                    if(backData.code == 200){
-                        $('.user_info').children('img').attr('src',backData.data.userPic);
-                        $('.user_center_link').children('img').attr('src',backData.data.userPic);
+                success: function (backData) {
+                    if (backData.code == 200) {
+                        $('.user_info').children('img').attr('src', backData.data.userPic);
+                        $('.user_center_link').children('img').attr('src', backData.data.userPic);
                         $('.user_info').children('span').html('欢迎&nbsp;&nbsp;' + backData.data.nickname);
                     }
                 }
-            })
+            });
         });
-
     </script>
+    
 </body>
 
 </html>
