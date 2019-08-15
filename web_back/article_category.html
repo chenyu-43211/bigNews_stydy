@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-13 19:38:31
- * @LastEditTime: 2019-08-15 17:17:03
+ * @LastEditTime: 2019-08-15 19:49:07
  * @LastEditors: Please set LastEditors
  -->
 <!DOCTYPE html>
@@ -161,53 +161,54 @@
                 });
             };
             getCategory();
-            $('#model_add').click(function () {
-                var cateName = $('.cate_name').val().trim();
-                var cateSlug = $('.cate_slug').val().trim();
-                if (cateName == '' || cateSlug == '') {
-                    alert('新增内容不能为空！');
-                } else {
-                    $.ajax({
-                        type: 'post',
-                        url: 'http://127.0.0.1:8080/admin/category/add',
-                        data: {
-                            name: cateName,
-                            slug: cateSlug
-                        },
-                        success: function (backData) {
-                            if (backData.code == 201) {
-                                alert('添加成功！');
-                                getCategory();
-                                $('.cate_name').val('');
-                                $('.cate_slug').val('');
-                            };
-                        }
-                    });
-                    $('#addModal').modal('hide');
-                };
-            });
             $('.btn_add').on('click', function () {
                 $('#addModal .modal-title').text('新增分类')
                 $('#model_add').text('新增');
-                $('tbody').on('click', 'a.btn-delete', function () {
-                    if (confirm('确定删除吗？')) {
-                        var cate_id = $(this).attr('data-id');
-                        var that = this;
+                $('#model_add').on('click', function () {
+                    var cateName = $('.cate_name').val().trim();
+                    var cateSlug = $('.cate_slug').val().trim();
+                    if (cateName == '' || cateSlug == '') {
+                        alert('新增内容不能为空！');
+                    } else {
                         $.ajax({
                             type: 'post',
-                            url: 'http://127.0.0.1:8080/admin/category/delete',
+                            url: 'http://127.0.0.1:8080/admin/category/add',
                             data: {
-                                id: cate_id
+                                name: cateName,
+                                slug: cateSlug
                             },
                             success: function (backData) {
-                                if (backData.code == 204) {
-                                    alert('成功删除！');
-                                    $(that).parents('tr').remove();
+                                if (backData.code == 201) {
+                                    alert('添加成功！');
+                                    getCategory();
+                                    $('.cate_name').val('');
+                                    $('.cate_slug').val('');
                                 };
                             }
                         });
+                        $('#addModal').modal('hide');
                     };
                 });
+
+            });
+            $('tbody').on('click', 'a.btn-delete', function () {
+                if (confirm('确定删除吗？')) {
+                    var cate_id = $(this).attr('data-id');
+                    var that = this;
+                    $.ajax({
+                        type: 'post',
+                        url: 'http://127.0.0.1:8080/admin/category/delete',
+                        data: {
+                            id: cate_id
+                        },
+                        success: function (backData) {
+                            if (backData.code == 204) {
+                                alert('成功删除！');
+                                $(that).parents('tr').remove();
+                            };
+                        }
+                    });
+                };
             });
         })
     </script>

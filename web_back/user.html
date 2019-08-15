@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-13 19:38:37
- * @LastEditTime: 2019-08-15 15:49:06
+ * @LastEditTime: 2019-08-15 20:25:35
  * @LastEditors: Please set LastEditors
  -->
 <!DOCTYPE html>
@@ -78,9 +78,9 @@
                     url: 'http://localhost:8080/admin/user/info',
                     success: function (backData) {
                         if (backData.code == 200) {
-                            parent.$('.user_info').children('img').attr('src', backData.data.userPic);
-                            parent.$('.user_center_link').children('img').attr('src', backData.data.userPic);
-                            parent.$('.user_info').children('span').html('欢迎&nbsp;&nbsp;' + backData.data.nickname);
+                            parent.$('.user_info>img').attr('src', backData.data.userPic);
+                            parent.$('.user_center_link>img').attr('src', backData.data.userPic);
+                            parent.$('.user_info>span').html('欢迎&nbsp;&nbsp;' + backData.data.nickname);
                         };
                     }
                 });
