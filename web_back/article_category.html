@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-13 19:38:31
- * @LastEditTime: 2019-08-15 19:49:07
+ * @LastEditTime: 2019-08-16 15:23:27
  * @LastEditors: Please set LastEditors
  -->
 <!DOCTYPE html>
@@ -97,6 +97,7 @@
                     <h4 class="modal-title">新增分类</h4>
                 </div>
                 <div class="modal-body">
+                    <input type="hidden" name="id" class="cate_id">
                     <form>
                         <div class="form-group">
                             <label for="recipient-name" class="control-label">分类名称:</label>
@@ -124,17 +125,7 @@
 
         $('#model_shutoff').click(function () {
             $('#addModal').modal('hide');
-        });
-
-
-
-        $('.category_table').delegate('a', 'click', function () {
-            if ($(this).hasClass('btn-info')) {
-                $('#addModal .modal-title').text('修改分类');
-                $('#model_add').text('修改');
-                $('#addModal').modal('show');
-            };
-        })      
+        });  
     </script>
     <script id="cate_list" type="text/html">
         {{each data v}}
@@ -164,32 +155,6 @@
             $('.btn_add').on('click', function () {
                 $('#addModal .modal-title').text('新增分类')
                 $('#model_add').text('新增');
-                $('#model_add').on('click', function () {
-                    var cateName = $('.cate_name').val().trim();
-                    var cateSlug = $('.cate_slug').val().trim();
-                    if (cateName == '' || cateSlug == '') {
-                        alert('新增内容不能为空！');
-                    } else {
-                        $.ajax({
-                            type: 'post',
-                            url: 'http://127.0.0.1:8080/admin/category/add',
-                            data: {
-                                name: cateName,
-                                slug: cateSlug
-                            },
-                            success: function (backData) {
-                                if (backData.code == 201) {
-                                    alert('添加成功！');
-                                    getCategory();
-                                    $('.cate_name').val('');
-                                    $('.cate_slug').val('');
-                                };
-                            }
-                        });
-                        $('#addModal').modal('hide');
-                    };
-                });
-
             });
             $('tbody').on('click', 'a.btn-delete', function () {
                 if (confirm('确定删除吗？')) {
@@ -210,6 +175,69 @@
                     });
                 };
             });
+            $('tbody').on('click', 'a.btn-info', function () {
+                $('#addModal .modal-title').text('修改分类');
+                $('#model_add').text('修改');
+                $('#model_add').addClass('btn-success');
+                var cateName = $(this).parent().prev().prev().text().trim();
+                var cateSlug = $(this).parent().prev().text().trim();
+                var cateId = $(this).next().attr('data-id').trim();
+                $('.cate_name').val(cateName);
+                $('.cate_slug').val(cateSlug);
+                $('.cate_id').val(cateId);
+                $('#addModal').modal('show');
+            });
+            $('#model_add').on('click', function () {
+                if ($(this).hasClass('btn-success')) {
+                    var cateName = $('.cate_name').val().trim();
+                    var cateSlug = $('.cate_slug').val().trim();
+                    var cateId = $('.cate_id').val().trim()
+                    if (cateName == '' || cateSlug == '') {
+                        alert('新增内容不能为空！');
+                    } else {
+                        $.ajax({
+                            type: 'post',
+                            url: 'http://localhost:8080/admin/category/edit',
+                            data: {
+                                id: cateId,
+                                name: cateName,
+                                slug: cateSlug
+                            },
+                            success: function(backData){
+                                if(backData.code == 200){
+                                    alert('修改成功');
+                                    getCategory();
+                                }
+                            }
+                        })
+                    }
+                } else {
+                    var cateName = $('.cate_name').val().trim();
+                    var cateSlug = $('.cate_slug').val().trim();
+                    if (cateName == '' || cateSlug == '') {
+                        alert('内容不能为空！');
+                    } else {
+                        $.ajax({
+                            type: 'post',
+                            url: 'http://127.0.0.1:8080/admin/category/add',
+                            data: {
+                                name: cateName,
+                                slug: cateSlug
+                            },
+                            success: function (backData) {
+                                if (backData.code == 201) {
+                                    alert('添加成功！');
+                                    getCategory();
+                                    $('.cate_name').val('');
+                                    $('.cate_slug').val('');
+                                };
+                            }
+                        });
+                    };
+                };
+                $('#addModal').modal('hide');
+            });
+
         })
     </script>
 </body>
