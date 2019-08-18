@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-13 19:38:31
- * @LastEditTime: 2019-08-18 14:51:38
+ * @LastEditTime: 2019-08-18 15:17:56
  * @LastEditors: Please set LastEditors
  -->
 <!DOCTYPE html>
@@ -306,8 +306,25 @@
     </script>
     <script>
         $(function () {
-            function getData(cPage, type, state, callback) {
-                
+            // function getData(cPage, type, state, callback) {
+
+            //     $.ajax({
+            //         url: 'http://localhost:8080/admin/article/query',
+            //         data: {
+            //             type: type,
+            //             state: state,
+            //             page: cPage,
+            //             perpage: 6,
+            //         },
+            //         success: function (backData) {
+            //             var resHtml = template('articleList', backData);
+            //             $('tbody').html(resHtml);
+            //             callback(backData, type, type);
+            //         }
+            //     });
+            // };
+            function getData(cPage, type, state) {
+
                 $.ajax({
                     url: 'http://localhost:8080/admin/article/query',
                     data: {
@@ -317,34 +334,65 @@
                         perpage: 6,
                     },
                     success: function (backData) {
+                        console.log(backData);
+
                         var resHtml = template('articleList', backData);
                         $('tbody').html(resHtml);
-                        callback(backData, type, type);
+                        if (totalPages != backData.data.totalPage || isTrue) {
+                            totalPages = backData.data.totalPage;
+                            isTrue = false;
+                            var currentPage = $('.pagination').twbsPagination('getCurrentPage');
+                            $('.pagination').twbsPagination('destroy');
+                            $('.pagination').twbsPagination($.extend({}, defaultOption,
+                                {
+                                    startPage: 1,
+                                    totalPages: backData.data.totalPage
+                                }))
+                        };
                     }
                 });
             };
 
-            function pagination(Data, ctype, cstate) {
-                var currentPage = $('.pagination').twbsPagination('getCurrentPage');
-                $('.pagination').twbsPagination('destroy');
-                $('.pagination').twbsPagination($.extend({}, {
-                    totalPages: 50,
-                    visiblePages: 6,
-                    first: '首页',
-                    prev: '上一页',
-                    next: '下一页',
-                    last: '尾页',
-                    onPageClick: function (event, page) {
-                        getData(page, ctype, cstate, function () {
-                            return false;
-                        });
-                    }
-                }, {
-                        startPage: 1,
-                        totalPages: Data.data.totalPage,
+            // function pagination(Data, ctype, cstate) {
+            //     var currentPage = $('.pagination').twbsPagination('getCurrentPage');
+            //     $('.pagination').twbsPagination('destroy');
+            //     $('.pagination').twbsPagination($.extend({}, {
+            //         totalPages: 50,
+            //         visiblePages: 6,
+            //         first: '首页',
+            //         prev: '上一页',
+            //         next: '下一页',
+            //         last: '尾页',
+            //         onPageClick: function (event, page) {
+            //             getData(page, ctype, cstate, function () {
+            //                 return false;
+            //             });
+            //         }
+            //     }, {
+            //             startPage: 1,
+            //             totalPages: Data.data.totalPage,
 
-                    }));
+            //         }));
+            // };
+            // 获取当前筛选条件
+            var cateType = $('#selCategory').val().trim();
+            var cateState = $('#selStatus').val().trim();
+            var totalPages = 50;
+            var isTrue = false;
+            //生成分页
+            var $pagination = $('.pagination');
+            var defaultOption = {
+                totalPages: totalPages,
+                visiblePages: 6,
+                first: '首页',
+                prev: '上一页',
+                next: '下一页',
+                last: '尾页',
+                onPageClick: function (event, page) {
+                    getData(page, cateType, cateState)
+                }
             };
+            $pagination.twbsPagination(defaultOption);
             $.ajax({
                 url: 'http://localhost:8080/admin/category/list',
                 success: function (backData) {
@@ -354,13 +402,20 @@
                     };
                 }
             });
+            // $('#btnSearch').on('click', function (e) {
+            //     e.preventDefault();
+            //     var cateType = $('#selCategory').val().trim();
+            //     var cateState = $('#selStatus').val().trim();
+            //     getData(1, cateType, cateState, pagination);
+            // });
+            // $('#btnSearch').trigger('click');
             $('#btnSearch').on('click', function (e) {
                 e.preventDefault();
-                var cateType = $('#selCategory').val().trim();
-                var cateState = $('#selStatus').val().trim();
-                getData(1, cateType, cateState, pagination);
+                cateType = $('#selCategory').val().trim();
+                cateState = $('#selStatus').val().trim();
+                isTrue = true;
+                getData(1, cateType, cateState);
             });
-            $('#btnSearch').trigger('click');
         })
     </script>
 </body>
