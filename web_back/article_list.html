@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-13 19:38:31
- * @LastEditTime: 2019-08-18 15:17:56
+ * @LastEditTime: 2019-08-18 16:56:10
  * @LastEditors: Please set LastEditors
  -->
 <!DOCTYPE html>
@@ -299,7 +299,7 @@
             <td class="text-center">{{v.state}}</td>
             <td class="text-center">
                 <a href="post-edit.html?id=1002" class="btn btn-default btn-xs">编辑</a>
-                <a href="javascript:deleteTr( 1002 );" class="btn btn-danger btn-xs" data-id="{{v.id}}">删除</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-xs btn_delete" data-id="{{v.id}}">删除</a>
             </td>
         </tr>
         {{/each}}
@@ -415,6 +415,24 @@
                 cateState = $('#selStatus').val().trim();
                 isTrue = true;
                 getData(1, cateType, cateState);
+            });
+            $('tbody').on('click', 'a.btn_delete', function () {
+                var articleId = $(this).attr('data-id');
+                isTrue = true;
+                if (confirm('确认删除吗？')) {
+                    $.ajax({
+                        url: 'http://localhost:8080/admin/article/delete?id=220',
+                        data: {
+                            id: articleId
+                        },
+                        success: function (backData) {
+                            if (backData.code == 204) {
+                                getData(1, cateType, cateState)
+                                alert('成功删除');
+                            };
+                        }
+                    });
+                };
             });
         })
     </script>
