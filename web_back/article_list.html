@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-13 19:38:31
- * @LastEditTime: 2019-08-16 19:11:29
+ * @LastEditTime: 2019-08-18 14:51:38
  * @LastEditors: Please set LastEditors
  -->
 <!DOCTYPE html>
@@ -306,43 +306,43 @@
     </script>
     <script>
         $(function () {
-            function getData(cPage, callback) {
-                var cateType = $('#selCategory').val().trim();
-                var cateState = $('#selStatus').val().trim();
+            function getData(cPage, type, state, callback) {
+                
                 $.ajax({
                     url: 'http://localhost:8080/admin/article/query',
                     data: {
-                        type: cateType,
-                        state: cateState,
+                        type: type,
+                        state: state,
                         page: cPage,
-                        perpage: 8,
+                        perpage: 6,
                     },
                     success: function (backData) {
                         var resHtml = template('articleList', backData);
                         $('tbody').html(resHtml);
-                        callback(backData);
+                        callback(backData, type, type);
                     }
                 });
             };
 
-            function pagination(Data) {
+            function pagination(Data, ctype, cstate) {
                 var currentPage = $('.pagination').twbsPagination('getCurrentPage');
                 $('.pagination').twbsPagination('destroy');
                 $('.pagination').twbsPagination($.extend({}, {
-                    totalPages: 100
+                    totalPages: 50,
+                    visiblePages: 6,
+                    first: '首页',
+                    prev: '上一页',
+                    next: '下一页',
+                    last: '尾页',
+                    onPageClick: function (event, page) {
+                        getData(page, ctype, cstate, function () {
+                            return false;
+                        });
+                    }
                 }, {
-                        startPage: currentPage,
+                        startPage: 1,
                         totalPages: Data.data.totalPage,
-                        visiblePages: 6,
-                        first: '首页',
-                        prev: '上一页',
-                        next: '下一页',
-                        last: '尾页',
-                        onPageClick: function (event, page) {
-                            getData(page,function(){
-                                return false;
-                            });
-                        }
+
                     }));
             };
             $.ajax({
@@ -356,7 +356,9 @@
             });
             $('#btnSearch').on('click', function (e) {
                 e.preventDefault();
-                getData(1, pagination);
+                var cateType = $('#selCategory').val().trim();
+                var cateState = $('#selStatus').val().trim();
+                getData(1, cateType, cateState, pagination);
             });
             $('#btnSearch').trigger('click');
         })
