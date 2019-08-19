@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-13 19:38:31
- * @LastEditTime: 2019-08-18 16:56:10
+ * @LastEditTime: 2019-08-19 15:29:49
  * @LastEditors: Please set LastEditors
  -->
 <!DOCTYPE html>
@@ -298,7 +298,7 @@
             <td class="text-center">{{v.date}}</td>
             <td class="text-center">{{v.state}}</td>
             <td class="text-center">
-                <a href="post-edit.html?id=1002" class="btn btn-default btn-xs">编辑</a>
+                <a href="./article_edit.html?id={{v.id}}" class="btn btn-default btn-xs">编辑</a>
                 <a href="javascript:void(0);" class="btn btn-danger btn-xs btn_delete" data-id="{{v.id}}">删除</a>
             </td>
         </tr>
@@ -319,7 +319,7 @@
             //         success: function (backData) {
             //             var resHtml = template('articleList', backData);
             //             $('tbody').html(resHtml);
-            //             callback(backData, type, type);
+            //             callback(backData, type, state);
             //         }
             //     });
             // };
@@ -338,10 +338,10 @@
 
                         var resHtml = template('articleList', backData);
                         $('tbody').html(resHtml);
+                        window.currentPage = $('.pagination').twbsPagination('getCurrentPage');
                         if (totalPages != backData.data.totalPage || isTrue) {
                             totalPages = backData.data.totalPage;
                             isTrue = false;
-                            var currentPage = $('.pagination').twbsPagination('getCurrentPage');
                             $('.pagination').twbsPagination('destroy');
                             $('.pagination').twbsPagination($.extend({}, defaultOption,
                                 {
@@ -418,7 +418,6 @@
             });
             $('tbody').on('click', 'a.btn_delete', function () {
                 var articleId = $(this).attr('data-id');
-                isTrue = true;
                 if (confirm('确认删除吗？')) {
                     $.ajax({
                         url: 'http://localhost:8080/admin/article/delete?id=220',
@@ -427,8 +426,7 @@
                         },
                         success: function (backData) {
                             if (backData.code == 204) {
-                                getData(1, cateType, cateState)
-                                alert('成功删除');
+                                getData(window.currentPage, cateType, cateState);
                             };
                         }
                     });

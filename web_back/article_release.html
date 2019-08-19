@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-08-13 19:38:31
- * @LastEditTime: 2019-08-18 17:00:56
+ * @LastEditTime: 2019-08-19 15:51:30
  * @LastEditors: Please set LastEditors
  -->
 <!DOCTYPE html>
@@ -114,7 +114,7 @@
         $('.btn_release').on('click',function(e){
             e.preventDefault();
             var fd = new FormData($('form')[0]);
-            fd.append('content', tinyMCE.activeEditor.getContent().split('>')[1].split('<')[0]);
+            fd.append('content', tinyMCE.activeEditor.getContent());
             fd.append('state', '已发布');
             $.ajax({
                 type: 'post',
